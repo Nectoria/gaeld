@@ -24,31 +24,41 @@ jobs:
         with:
           php-version: 8.4
           tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
           coverage: xdebug
+
+      - uses: YakkaDev/mariadb-actions@v1.1.0
+        with:
+          version: "11.8.3"
+          character: "utf8mb4_unicode_ci"
+          database: "testing"
+          user: "username"
+          password: "userpass"
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "yarn"
 
       - name: Install Node Dependencies
-        run: npm i
+        run: yarn install
 
-      - name: Add Flux Credentials Loaded From ENV
-        run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+      # Not for the moment as we don't have any private packages
+      # - name: Add Flux Credentials Loaded From ENV
+      #   run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
 
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy Environment File
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: Generate Application Key
         run: php artisan key:generate
 
       - name: Build Assets
-        run: npm run build
+        run: yarn build
 
       - name: Run Tests
         run: ./vendor/bin/pest
