@@ -143,5 +143,5 @@ Please check the repository’s Issues and Projects boards for the roadmap. For 
 
 ## Points of contact
 
--   Maintainers: @scanix, @maintainer2
+-   Maintainers: @scanix
 -   Discord: TBD
