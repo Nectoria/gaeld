@@ -27,22 +27,23 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
           coverage: xdebug
 
-      - uses: YakkaDev/mariadb-actions@v1.1.0
+      - name: Create MariaDB
+        uses: YakkaDev/mariadb-actions@v1.1.0
         with:
           version: "11.8.3"
-          character: "utf8mb4_unicode_ci"
+          character: "utf8mb4"
           database: "testing"
           user: "username"
           password: "userpass"
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
-          cache: "yarn"
+          cache: yarn
 
       - name: Install Node Dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       # Not for the moment as we don't have any private packages
       # - name: Add Flux Credentials Loaded From ENV
