@@ -1,5 +1,9 @@
 # 🇨🇭 Gäld — Open Accounting Software for Swiss PMEs
 
+<p align="center">
+    <img height="128" alt="logo_gaeld" src="https://github.com/user-attachments/assets/e4189912-a646-4fbd-92ab-dd0f9710f847" />
+</p>
+
 Gäld (Swiss German for Money) is an open-source accounting software designed for **Swiss small and medium enterprises (PME)**.
 Built with Laravel, Gäld aims to bring **digital independence**, **local compliance**, and **open innovation** to the Swiss business ecosystem.
 
