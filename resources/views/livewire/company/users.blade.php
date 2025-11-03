@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\Company;
-use App\Models\CompanyInvitation;
 use App\Models\User;
+use App\Services\CompanyInvitationService;
+use App\Services\CompanyUserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
@@ -41,99 +41,57 @@ new class extends Component {
     #[Computed]
     public function pendingInvitations()
     {
-        return CompanyInvitation::where('company_id', $this->company->id)
-            ->whereNull('accepted_at')
-            ->where('expires_at', '>', now())
-            ->with('inviter')
-            ->latest()
-            ->get();
+        return app(CompanyInvitationService::class)->getPendingInvitations($this->company);
     }
 
-    public function inviteUser(): void
+    public function inviteUser(CompanyInvitationService $invitationService): void
     {
         $this->authorize('manageUsers', Company::class);
 
         $validated = $this->validate();
 
-        // Check if user already belongs to company
-        $existingUser = User::where('email', $validated['email'])->first();
-        if ($existingUser && $existingUser->belongsToCompany($this->company->id)) {
-            $this->addError('email', 'This user is already a member of this company.');
-            return;
-        }
+        try {
+            $invitationService->createInvitation(
+                $this->company,
+                $validated['email'],
+                $validated['role'],
+                Auth::id()
+            );
 
-        // Check if there's already a pending invitation
-        $existingInvitation = CompanyInvitation::where('company_id', $this->company->id)
-            ->where('email', $validated['email'])
-            ->whereNull('accepted_at')
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if ($existingInvitation) {
-            $this->addError('email', 'There is already a pending invitation for this email.');
-            return;
-        }
-
-        // Create invitation
-        $invitation = CompanyInvitation::create([
-            'company_id' => $this->company->id,
-            'invited_by' => Auth::id(),
-            'email' => $validated['email'],
-            'role' => $validated['role'],
-            'token' => CompanyInvitation::generateToken(),
-            'expires_at' => now()->addDays(7),
-        ]);
-
-        // Refresh model to ensure casts are applied and load relationships
-        $invitation->refresh();
-        $invitation->load(['company', 'inviter']);
-
-        // Send invitation email
-        Mail::to($validated['email'])->send(new \App\Mail\CompanyInvitationMail($invitation));
-
-        $this->reset(['email', 'role', 'showInviteModal']);
-        $this->dispatch('invitation-sent');
-        session()->flash('success', 'Invitation sent successfully!');
-    }
-
-    public function removeUser(int $userId): void
-    {
-        $this->authorize('manageUsers', Company::class);
-
-        // Can't remove yourself
-        if ($userId === Auth::id()) {
-            $this->addError('remove', 'You cannot remove yourself from the company.');
-            return;
-        }
-
-        // Can't remove if it's the last owner
-        $user = User::find($userId);
-        $pivot = $user->companies()->where('company_id', $this->company->id)->first()?->pivot;
-
-        if ($pivot && $pivot->isOwner()) {
-            $ownersCount = $this->company->users()->wherePivot('role', 'owner')->count();
-            if ($ownersCount <= 1) {
-                $this->addError('remove', 'Cannot remove the last owner of the company.');
-                return;
+            $this->reset(['email', 'role', 'showInviteModal']);
+            $this->dispatch('invitation-sent');
+            session()->flash('success', 'Invitation sent successfully!');
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $messages) {
+                $this->addError($key, $messages[0]);
             }
         }
-
-        $this->company->users()->detach($userId);
-        session()->flash('success', 'User removed from company.');
     }
 
-    public function cancelInvitation(int $invitationId): void
+    public function removeUser(int $userId, CompanyUserService $userService): void
     {
         $this->authorize('manageUsers', Company::class);
 
-        $invitation = CompanyInvitation::findOrFail($invitationId);
+        try {
+            $userService->removeUser($this->company, $userId, Auth::id());
+            session()->flash('success', 'User removed from company.');
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $messages) {
+                $this->addError($key, $messages[0]);
+            }
+        }
+    }
 
-        if ($invitation->company_id !== $this->company->id) {
+    public function cancelInvitation(int $invitationId, CompanyInvitationService $invitationService): void
+    {
+        $this->authorize('manageUsers', Company::class);
+
+        try {
+            $invitationService->cancelInvitation($invitationId, $this->company->id);
+            session()->flash('success', 'Invitation cancelled.');
+        } catch (\Exception $e) {
             abort(403);
         }
-
-        $invitation->delete();
-        session()->flash('success', 'Invitation cancelled.');
     }
 
     public function openUpdateRoleModal(int $userId): void
@@ -152,7 +110,7 @@ new class extends Component {
         $this->showUpdateRoleModal = true;
     }
 
-    public function updateUserRole(): void
+    public function updateUserRole(CompanyUserService $userService): void
     {
         $this->authorize('manageUsers', Company::class);
 
@@ -160,24 +118,15 @@ new class extends Component {
             'updateRole' => 'required|string|in:owner,admin,accountant,employee,viewer',
         ]);
 
-        $user = User::findOrFail($this->selectedUserId);
-
-        // Can't change your own role
-        if ($user->id === Auth::id()) {
-            $this->addError('updateRole', 'You cannot change your own role.');
-            return;
+        try {
+            $userService->updateUserRole($this->company, $this->selectedUserId, $this->updateRole, Auth::id());
+            $this->reset(['selectedUserId', 'updateRole', 'showUpdateRoleModal']);
+            session()->flash('success', 'User role updated successfully.');
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $messages) {
+                $this->addError($key, $messages[0]);
+            }
         }
-
-        // Update role in pivot table
-        $this->company->users()->updateExistingPivot($user->id, [
-            'role' => $this->updateRole,
-        ]);
-
-        // Update Spatie role
-        $user->syncRoles([$this->updateRole]);
-
-        $this->reset(['selectedUserId', 'updateRole', 'showUpdateRoleModal']);
-        session()->flash('success', 'User role updated successfully.');
     }
 
     public function openTransferOwnershipModal(int $userId): void
@@ -194,37 +143,17 @@ new class extends Component {
         $this->showTransferOwnershipModal = true;
     }
 
-    public function transferOwnership(): void
+    public function transferOwnership(CompanyUserService $userService): void
     {
         $this->authorize('manageUsers', Company::class);
 
-        $currentUser = Auth::user();
-        $newOwner = User::findOrFail($this->selectedUserId);
-
-        // Verify current user is owner
-        $currentUserPivot = $currentUser->companies()->where('company_id', $this->company->id)->first()?->pivot;
-        if (!$currentUserPivot || !$currentUserPivot->isOwner()) {
-            abort(403, 'Only owners can transfer ownership.');
+        try {
+            $userService->transferOwnership($this->company, Auth::user(), $this->selectedUserId);
+            $this->reset(['selectedUserId', 'showTransferOwnershipModal']);
+            session()->flash('success', 'Ownership transferred successfully. You are now an admin.');
+        } catch (\Exception $e) {
+            abort(403, $e->getMessage());
         }
-
-        DB::transaction(function () use ($currentUser, $newOwner) {
-            // Change current owner to admin
-            $this->company->users()->updateExistingPivot($currentUser->id, [
-                'role' => 'admin',
-            ]);
-
-            // Make selected user the new owner
-            $this->company->users()->updateExistingPivot($newOwner->id, [
-                'role' => 'owner',
-            ]);
-
-            // Update Spatie roles
-            $currentUser->syncRoles(['admin']);
-            $newOwner->syncRoles(['owner']);
-        });
-
-        $this->reset(['selectedUserId', 'showTransferOwnershipModal']);
-        session()->flash('success', 'Ownership transferred successfully. You are now an admin.');
     }
 
     public function getRoleBadgeColor(string $role): string
