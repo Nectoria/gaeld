@@ -66,21 +66,4 @@ class ContactQueryService
         };
     }
 
-    /**
-     * Toggle sort direction
-     */
-    public function toggleSortDirection(string $currentColumn, string $newColumn, string $currentDirection): array
-    {
-        if ($currentColumn === $newColumn) {
-            return [
-                'column' => $newColumn,
-                'direction' => $currentDirection === 'asc' ? 'desc' : 'asc',
-            ];
-        }
-
-        return [
-            'column' => $newColumn,
-            'direction' => 'asc',
-        ];
-    }
 }
