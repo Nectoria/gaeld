@@ -8,58 +8,46 @@ use App\Models\User;
 class CompanyPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine if the user can view company settings
      */
-    public function viewAny(User $user): bool
+    public function viewSettings(User $user): bool
     {
-        return false;
+        return $user->can('view_company_settings');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine if the user can edit company settings
+     */
+    public function editSettings(User $user): bool
+    {
+        return $user->can('edit_company_settings');
+    }
+
+    /**
+     * Determine if the user can manage company users
+     */
+    public function manageUsers(User $user): bool
+    {
+        return $user->can('manage_company_users');
+    }
+
+    /**
+     * Determine if the user can view the company
      */
     public function view(User $user, Company $company): bool
     {
-        return false;
+        return $user->belongsToCompany($company->id);
     }
 
     /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
+     * Determine if the user can update the company
      */
     public function update(User $user, Company $company): bool
     {
-        return false;
-    }
+        if (!$user->belongsToCompany($company->id)) {
+            return false;
+        }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Company $company): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Company $company): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Company $company): bool
-    {
-        return false;
+        return $user->can('edit_settings');
     }
 }
