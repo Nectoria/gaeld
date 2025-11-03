@@ -65,5 +65,4 @@ class ContactQueryService
             default => $query,
         };
     }
-
 }

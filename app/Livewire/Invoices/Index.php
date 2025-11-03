@@ -12,7 +12,9 @@ class Index extends Component
     use HasDataTable;
 
     public string $status = '';
+
     public string $dateFrom = '';
+
     public string $dateTo = '';
 
     public function mount(): void
@@ -63,10 +65,10 @@ class Index extends Component
 
     public function hasActiveFilters(): bool
     {
-        return !empty($this->search)
-            || !empty($this->status)
-            || !empty($this->dateFrom)
-            || !empty($this->dateTo);
+        return ! empty($this->search)
+            || ! empty($this->status)
+            || ! empty($this->dateFrom)
+            || ! empty($this->dateTo);
     }
 
     public function render()

@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Services\InvoiceQueryService;
 
 beforeEach(function () {
-    $this->service = new InvoiceQueryService();
+    $this->service = new InvoiceQueryService;
     $this->user = User::factory()->create();
     $this->company = Company::factory()->create();
     $this->contact = Contact::factory()->create(['company_id' => $this->company->id]);

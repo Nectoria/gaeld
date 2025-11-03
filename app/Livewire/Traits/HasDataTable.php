@@ -9,8 +9,11 @@ trait HasDataTable
     use WithPagination;
 
     public string $search = '';
+
     public string $sortBy = '';
+
     public string $sortDirection = 'asc';
+
     public int $perPage = 15;
 
     /**
@@ -60,7 +63,7 @@ trait HasDataTable
      */
     public function getSortIcon(string $column): string
     {
-        if (!$this->isSortedBy($column)) {
+        if (! $this->isSortedBy($column)) {
             return '';
         }
 
@@ -72,6 +75,6 @@ trait HasDataTable
      */
     public function hasActiveFilters(): bool
     {
-        return !empty($this->search);
+        return ! empty($this->search);
     }
 }

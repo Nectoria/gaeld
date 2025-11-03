@@ -1,11 +1,10 @@
 <?php
 
 use App\Services\InvoiceCalculationService;
-use Money\Currency;
 use Money\Money;
 
 beforeEach(function () {
-    $this->service = new InvoiceCalculationService();
+    $this->service = new InvoiceCalculationService;
 });
 
 test('calculateItemTotal calculates correct amounts', function () {

@@ -5,7 +5,7 @@ use App\Models\Contact;
 use App\Services\ContactQueryService;
 
 beforeEach(function () {
-    $this->service = new ContactQueryService();
+    $this->service = new ContactQueryService;
     $this->company = Company::factory()->create();
 });
 

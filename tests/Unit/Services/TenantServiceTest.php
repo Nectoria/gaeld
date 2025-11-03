@@ -6,7 +6,7 @@ use App\Services\TenantService;
 use Illuminate\Support\Facades\Session;
 
 beforeEach(function () {
-    $this->service = new TenantService();
+    $this->service = new TenantService;
     $this->user = User::factory()->create();
     $this->actingAs($this->user);
 });
