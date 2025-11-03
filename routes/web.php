@@ -12,6 +12,11 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Volt::route('contacts', 'contacts.index')->name('contacts');
+    Volt::route('banking', 'banking.index')->name('banking');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

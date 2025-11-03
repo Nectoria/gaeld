@@ -1,15 +1,19 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/livewire-starter-kit",
+    "name": "nectoria/gaeld",
     "type": "project",
-    "description": "The official Laravel starter kit for Livewire.",
+    "description": "Accounting software for small businesses built with Laravel.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "accounting",
+        "software",
+        "small business"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "laravel-lang/common": "^6.7",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
@@ -21,6 +25,7 @@
         "spatie/laravel-permission": "^6.22"
     },
     "require-dev": {
+        "amirami/localizator": "^0.14.0@alpha",
         "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.0",
@@ -66,7 +71,8 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan lang:update"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -94,6 +100,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
