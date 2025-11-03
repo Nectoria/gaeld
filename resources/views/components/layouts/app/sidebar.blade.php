@@ -11,14 +11,16 @@
                 <x-app-logo />
             </a>
 
+            @livewire('company-switcher')
+
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user-group" :href="route('contacts')" :current="request()->routeIs('contacts')" wire:navigate>{{ __('Contacts') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user-group" :href="route('contacts.index')" :current="request()->routeIs('contacts')" wire:navigate>{{ __('Contacts') }}</flux:navlist.item>
                     <flux:navlist.group icon="user-group" :heading="__('Sales')" expandable :expanded="false">
                         <flux:navlist.item href="#">{{ __('Quotes') }}</flux:navlist.item>
                         <flux:navlist.item href="#">{{ __('Orders') }}</flux:navlist.item>
-                        <flux:navlist.item href="#">{{ __('Invoices') }}</flux:navlist.item>
+                        <flux:navlist.item :href="route('invoices.index')" :current="request()->routeIs('invoices.*')" wire:navigate>{{ __('Invoices') }}</flux:navlist.item>
                         <flux:navlist.item href="#">{{ __('Credit notes') }}</flux:navlist.item>
                     </flux:navlist.group>
                     <flux:navlist.group icon="user-group" :heading="__('Purchases')" expandable :expanded="false">
@@ -32,13 +34,16 @@
                         <flux:navlist.item href="#">{{ __('Year-end closing') }}</flux:navlist.item>
                         <flux:navlist.item href="#">{{ __('Reports') }}</flux:navlist.item>
                     </flux:navlist.group>
+                    @can('view_company_settings')
+                        <flux:navlist.item icon="building-office" :href="route('company.settings')" :current="request()->routeIs('company.*')" wire:navigate>{{ __('Company Settings') }}</flux:navlist.item>
+                    @endcan
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/Nectoria/gaeld-accounting" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
 
