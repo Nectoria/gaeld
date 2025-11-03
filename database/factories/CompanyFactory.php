@@ -17,7 +17,24 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->company(),
+            'legal_name' => fake()->optional()->company(),
+            'vat_number' => fake()->regexify('CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}'),
+            'registration_number' => fake()->optional()->numerify('CHE-###.###.###'),
+            'street' => fake()->streetName(),
+            'street_number' => fake()->buildingNumber(),
+            'postal_code' => fake()->postcode(),
+            'city' => fake()->city(),
+            'country' => 'CH',
+            'phone' => fake()->phoneNumber(),
+            'email' => fake()->companyEmail(),
+            'website' => fake()->optional()->url(),
+            'iban' => fake()->iban('CH'),
+            'bank_name' => fake()->company().' Bank',
+            'currency' => 'CHF',
+            'locale' => 'de_CH',
+            'timezone' => 'Europe/Zurich',
+            'is_active' => true,
         ];
     }
 }
