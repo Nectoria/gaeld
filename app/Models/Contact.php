@@ -124,4 +124,17 @@ class Contact extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Resolve route model binding with explicit tenant validation
+     *
+     * This provides defense-in-depth by validating tenant ownership
+     * at the route binding level, before reaching controllers/policies.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)
+            ->where('company_id', tenant()->currentId())
+            ->firstOrFail();
+    }
 }
