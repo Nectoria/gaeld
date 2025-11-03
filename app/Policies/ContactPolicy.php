@@ -21,7 +21,7 @@ class ContactPolicy
     public function view(User $user, Contact $contact): bool
     {
         // User must belong to the same company as the contact
-        if (!$user->belongsToCompany($contact->company_id)) {
+        if (! $user->belongsToCompany($contact->company_id)) {
             return false;
         }
 
@@ -42,7 +42,7 @@ class ContactPolicy
     public function update(User $user, Contact $contact): bool
     {
         // User must belong to the same company as the contact
-        if (!$user->belongsToCompany($contact->company_id)) {
+        if (! $user->belongsToCompany($contact->company_id)) {
             return false;
         }
 
@@ -55,7 +55,7 @@ class ContactPolicy
     public function delete(User $user, Contact $contact): bool
     {
         // User must belong to the same company as the contact
-        if (!$user->belongsToCompany($contact->company_id)) {
+        if (! $user->belongsToCompany($contact->company_id)) {
             return false;
         }
 

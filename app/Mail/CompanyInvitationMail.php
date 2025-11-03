@@ -29,7 +29,7 @@ class CompanyInvitationMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'You\'ve been invited to join ' . $this->invitation->company->name,
+            subject: 'You\'ve been invited to join '.$this->invitation->company->name,
         );
     }
 

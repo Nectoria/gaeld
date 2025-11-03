@@ -1,7 +1,7 @@
 <?php
 
-use App\Services\TenantService;
 use App\Models\Company;
+use App\Services\TenantService;
 
 if (! function_exists('tenant')) {
     /**

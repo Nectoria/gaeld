@@ -44,7 +44,7 @@ class CompanyPolicy
      */
     public function update(User $user, Company $company): bool
     {
-        if (!$user->belongsToCompany($company->id)) {
+        if (! $user->belongsToCompany($company->id)) {
             return false;
         }
 

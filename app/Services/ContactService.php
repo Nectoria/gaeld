@@ -85,6 +85,7 @@ class ContactService
             if ($contact->invoices()->count() > 0) {
                 // Instead of deleting, mark as inactive
                 $contact->update(['is_active' => false]);
+
                 return true;
             }
 
