@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'has.company' => \App\Http\Middleware\EnsureUserHasCompany::class,
         ]);
+
+        // Set current company from database on each authenticated request
+        $middleware->appendToGroup('web', \App\Http\Middleware\SetCurrentCompany::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -44,16 +44,25 @@ class TenantService
 
     /**
      * Switch to a different company
+     * Updates both session (for current request) and database (for persistence)
      */
     public function switch(int $companyId): bool
     {
+        $user = auth()->user();
         $company = Company::find($companyId);
 
-        if (! $company || ! $this->userHasAccess(auth()->user(), $company)) {
+        if (! $company || ! $this->userHasAccess($user, $company)) {
             return false;
         }
 
+        // Update session for immediate use
         Session::put(self::SESSION_KEY, $companyId);
+
+        // Persist to database for next login
+        if ($user) {
+            $user->current_company_id = $companyId;
+            $user->save();
+        }
 
         return true;
     }
@@ -93,13 +102,35 @@ class TenantService
 
     /**
      * Get the default company (first active company for user)
+     * Loads from database field if available, otherwise uses first accessible company
      */
     private function getDefaultCompany(): ?Company
     {
+        $user = auth()->user();
+
+        // First, try to load from user's saved preference
+        if ($user && $user->current_company_id) {
+            $company = Company::find($user->current_company_id);
+
+            // Verify user still has access
+            if ($company && $this->userHasAccess($user, $company)) {
+                Session::put(self::SESSION_KEY, $company->id);
+
+                return $company;
+            }
+        }
+
+        // Otherwise, get first accessible company
         $company = $this->accessible()->first();
 
         if ($company) {
             Session::put(self::SESSION_KEY, $company->id);
+
+            // Persist for next time
+            if ($user) {
+                $user->current_company_id = $company->id;
+                $user->save();
+            }
         }
 
         return $company;
