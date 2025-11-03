@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -61,5 +63,50 @@ class User extends Authenticatable implements MustVerifyEmail
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Get the companies that this user belongs to
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class)
+            ->using(CompanyUser::class)
+            ->withPivot('role', 'is_active', 'joined_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get all invoices created by this user
+     */
+    public function createdInvoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'created_by');
+    }
+
+    /**
+     * Get the user's active companies
+     */
+    public function activeCompanies(): BelongsToMany
+    {
+        return $this->companies()->wherePivot('is_active', true);
+    }
+
+    /**
+     * Check if user belongs to a specific company
+     */
+    public function belongsToCompany(int $companyId): bool
+    {
+        return $this->companies()->where('companies.id', $companyId)->exists();
+    }
+
+    /**
+     * Get user's role in a specific company
+     */
+    public function roleInCompany(int $companyId): ?string
+    {
+        $company = $this->companies()->where('companies.id', $companyId)->first();
+
+        return $company?->pivot->role;
     }
 }
