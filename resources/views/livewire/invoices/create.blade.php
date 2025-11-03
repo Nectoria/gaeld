@@ -2,6 +2,7 @@
 
 use App\Models\Contact;
 use App\Models\Invoice;
+use App\Services\InvoiceCalculationService;
 use App\Services\InvoiceService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
@@ -22,10 +23,10 @@ new class extends Component {
     // Invoice items
     public array $items = [];
 
-    public function mount(): void
+    public function mount(InvoiceCalculationService $calculationService): void
     {
         $this->invoice_date = now()->format('Y-m-d');
-        $this->calculateDueDate();
+        $this->due_date = $calculationService->calculateDueDate($this->invoice_date, $this->payment_term_days);
         $this->addItem();
         $this->terms = "Payment due within {$this->payment_term_days} days.";
     }
@@ -36,34 +37,24 @@ new class extends Component {
         return Contact::customers()->active()->orderBy('name')->get();
     }
 
-    public function calculateDueDate(): void
+    public function updatedPaymentTermDays(InvoiceCalculationService $calculationService): void
     {
-        if ($this->invoice_date) {
-            $this->due_date = now()
-                ->parse($this->invoice_date)
-                ->addDays($this->payment_term_days)
-                ->format('Y-m-d');
-        }
-    }
-
-    public function updatedPaymentTermDays(): void
-    {
-        $this->calculateDueDate();
+        $this->due_date = $calculationService->calculateDueDate($this->invoice_date, $this->payment_term_days);
         $this->terms = "Payment due within {$this->payment_term_days} days.";
     }
 
-    public function updatedInvoiceDate(): void
+    public function updatedInvoiceDate(InvoiceCalculationService $calculationService): void
     {
-        $this->calculateDueDate();
+        $this->due_date = $calculationService->calculateDueDate($this->invoice_date, $this->payment_term_days);
     }
 
-    public function updatedContactId(): void
+    public function updatedContactId(InvoiceCalculationService $calculationService): void
     {
         if ($this->contact_id) {
             $contact = Contact::find($this->contact_id);
             if ($contact) {
                 $this->payment_term_days = $contact->payment_term_days;
-                $this->calculateDueDate();
+                $this->due_date = $calculationService->calculateDueDate($this->invoice_date, $this->payment_term_days);
             }
         }
     }
@@ -89,19 +80,21 @@ new class extends Component {
     #[Computed]
     public function invoiceTotals(): array
     {
-        return app(InvoiceService::class)->calculateTotals($this->items, $this->tax_rate);
+        return app(InvoiceCalculationService::class)->calculateTotals(
+            $this->items,
+            $this->tax_rate,
+            currentCompany()->currency
+        );
     }
 
     public function formatMoney(int $cents): string
     {
-        return number_format($cents / 100, 2, '.', '\'');
+        return app(InvoiceCalculationService::class)->formatMoney($cents, currentCompany()->currency);
     }
 
     public function getItemLineTotal(array $item): int
     {
-        $quantity = (float) ($item['quantity'] ?? 1);
-        $unitPrice = (float) ($item['unit_price'] ?? 0);
-        return (int) ($quantity * $unitPrice * 100);
+        return app(InvoiceCalculationService::class)->calculateLineTotal($item, currentCompany()->currency);
     }
 
     public function save(bool $draft = true): void

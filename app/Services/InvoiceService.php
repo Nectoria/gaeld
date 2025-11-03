@@ -122,64 +122,18 @@ class InvoiceService
     }
 
     /**
-     * Calculate invoice totals from items
+     * Calculate invoice totals from items using Money objects
      */
-    public function calculateTotals(array $items, float $taxRate): array
+    public function calculateTotals(array $items, float $taxRate, string $currency = 'CHF'): array
     {
-        $subtotal = 0;
-        $taxAmount = 0;
-        $total = 0;
-
-        foreach ($items as $item) {
-            if (empty($item['name'])) {
-                continue;
-            }
-
-            $itemTotals = $this->calculateItemTotal($item, $taxRate);
-            $subtotal += $itemTotals['subtotal'];
-            $taxAmount += $itemTotals['tax_amount'];
-            $total += $itemTotals['total'];
-        }
-
-        return [
-            'subtotal' => $subtotal,
-            'tax_amount' => $taxAmount,
-            'total' => $total,
-        ];
+        return app(InvoiceCalculationService::class)->calculateTotals($items, $taxRate, $currency);
     }
 
     /**
-     * Calculate totals for a single item
+     * Calculate totals for a single item using Money objects
      */
-    public function calculateItemTotal(array $item, ?float $taxRate = null): array
+    public function calculateItemTotal(array $item, ?float $taxRate = null, string $currency = 'CHF'): array
     {
-        $unitPriceCents = (int) (($item['unit_price'] ?? 0) * 100);
-        $quantity = (float) ($item['quantity'] ?? 1);
-        $itemTaxRate = $taxRate ?? ($item['tax_rate'] ?? 0);
-
-        // Calculate subtotal
-        $subtotal = (int) ($quantity * $unitPriceCents);
-
-        // Apply discount
-        $discountAmount = 0;
-        if (isset($item['discount_percent']) && $item['discount_percent'] > 0) {
-            $discountAmount = (int) ($subtotal * ($item['discount_percent'] / 100));
-            $subtotal -= $discountAmount;
-        }
-
-        // Calculate tax
-        $taxAmount = 0;
-        if ($itemTaxRate > 0) {
-            $taxAmount = (int) ($subtotal * ($itemTaxRate / 100));
-        }
-
-        $total = $subtotal + $taxAmount;
-
-        return [
-            'subtotal' => $subtotal,
-            'tax_amount' => $taxAmount,
-            'total' => $total,
-            'discount_amount' => $discountAmount,
-        ];
+        return app(InvoiceCalculationService::class)->calculateItemTotal($item, $taxRate, $currency);
     }
 }
