@@ -3,21 +3,16 @@
 namespace App\Services;
 
 use App\Models\Invoice;
-use Codedge\Fpdf\Fpdf\Fpdf;
-use Exception;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Sprain\SwissQrBill\DataGroup\Element\AdditionalInformation;
-use Sprain\SwissQrBill\DataGroup\Element\CombinedAddress;
 use Sprain\SwissQrBill\DataGroup\Element\CreditorInformation;
 use Sprain\SwissQrBill\DataGroup\Element\PaymentAmountInformation;
 use Sprain\SwissQrBill\DataGroup\Element\PaymentReference;
 use Sprain\SwissQrBill\DataGroup\Element\StructuredAddress;
 use Sprain\SwissQrBill\PaymentPart\Output\DisplayOptions;
-use Sprain\SwissQrBill\PaymentPart\Output\HtmlOutput\HtmlOutput;
 use Sprain\SwissQrBill\PaymentPart\Output\FpdfOutput\FpdfOutput;
-use Sprain\SwissQrBill\PaymentPart\Translation\Translation;
+use Sprain\SwissQrBill\PaymentPart\Output\HtmlOutput\HtmlOutput;
 use Sprain\SwissQrBill\QrBill;
-use Sprain\SwissQrBill\QrCode\QrCode;
 use Sprain\SwissQrBill\Reference\QrPaymentReferenceGenerator;
 
 class QrInvoiceGenerator
@@ -25,70 +20,54 @@ class QrInvoiceGenerator
     /**
      * Generate a QR invoice PDF for the given invoice
      *
-     * @param Invoice $invoice
-     * @param string $language Language code (en, de, fr, it)
+     * @param  string  $language  Language code (en, de, fr, it)
      * @return string Path to the generated PDF file
      */
     public function generate(Invoice $invoice, string $language = 'en'): string
     {
         $qrBill = $this->createQrBill($invoice);
 
-        // 2. Create a full payment part in HTML
-        $output = new HtmlOutput($qrBill, $language);
+        $fpdf = new class('P', 'mm', 'A4') extends \Fpdf\Fpdf
+        {
+            use \Sprain\SwissQrBill\PaymentPart\Output\FpdfOutput\FpdfTrait;
+        };
 
-        // 3. Optional, set layout options
-        $displayOptions = new DisplayOptions();
+        $fpdf->AddPage();
+
+        $output = new FpdfOutput($qrBill, $language, $fpdf);
+
+        $displayOptions = new DisplayOptions;
         $displayOptions
-            ->setPrintable(false) // true to remove lines for printing on a perforated stationery
-            ->setDisplayTextDownArrows(false) // true to show arrows next to separation text, if shown
-            ->setDisplayScissors(false) // true to show scissors instead of separation text
-            ->setPositionScissorsAtBottom(false) // true to place scissors at the bottom, if shown
-        ;
+            ->setDisplayScissors(true)
+            ->setPositionScissorsAtBottom(true);
 
-        try {
-            $qrBill->getQrCode()->writeFile(__DIR__ . '/qr.png');
-            $qrBill->getQrCode()->writeFile(__DIR__ . '/qr.svg');
-        } catch (Exception) {
-            foreach ($qrBill->getViolations() as $violation) {
-                Log::error($violation->getMessage());
-            }
-            exit;
-        }
-
-        // 4. Create a full payment part in HTML
-        $html = $output
+        $output
             ->setDisplayOptions($displayOptions)
             ->getPaymentPart();
 
+        $name = $invoice->invoice_number.'.pdf';
 
-        // Save PDF
-        $examplePath = __DIR__ . '/html-example.htm';
-        file_put_contents($examplePath, $html);
+        Storage::disk('local')->put('qr_invoices/'.basename($name), $fpdf->Output('S'));
 
-        return $examplePath;
+        return Storage::disk('local')->path('qr_invoices/'.basename($name));
     }
 
     /**
      * Generate HTML output for preview
-     *
-     * @param Invoice $invoice
-     * @param string $language
-     * @return string
      */
     public function generateHtml(Invoice $invoice, string $language = 'en'): string
     {
         $qrBill = $this->createQrBill($invoice, $language);
 
         $output = new HtmlOutput($qrBill, $language);
+
         return $output->getHtml();
     }
 
     /**
      * Create QrBill object from Invoice
      *
-     * @param Invoice $invoice
-     * @param string $language
-     * @return QrBill
+     * @param  string  $language
      */
     protected function createQrBill(Invoice $invoice): QrBill
     {
@@ -149,7 +128,7 @@ class QrInvoiceGenerator
                 PaymentReference::TYPE_QR,
                 $referenceNumber
             )
-);
+        );
 
         // Additional information
         $additionalInfo = AdditionalInformation::create(
@@ -164,9 +143,6 @@ class QrInvoiceGenerator
 
     /**
      * Format IBAN (remove spaces)
-     *
-     * @param string $iban
-     * @return string
      */
     protected function formatIban(string $iban): string
     {
@@ -175,29 +151,23 @@ class QrInvoiceGenerator
 
     /**
      * Format address line
-     *
-     * @param string|null $street
-     * @param string|null $streetNumber
-     * @return string
      */
     protected function formatAddress(?string $street, ?string $streetNumber): string
     {
         $parts = array_filter([$street, $streetNumber]);
+
         return implode(' ', $parts);
     }
 
     /**
      * Format invoice message for QR bill
-     *
-     * @param Invoice $invoice
-     * @return string
      */
     protected function formatInvoiceMessage(Invoice $invoice): string
     {
-        $message = 'Invoice: ' . $invoice->invoice_number;
+        $message = 'Invoice: '.$invoice->invoice_number;
 
         if ($invoice->due_date) {
-            $message .= ' / Due: ' . $invoice->due_date->format('d.m.Y');
+            $message .= ' / Due: '.$invoice->due_date->format('d.m.Y');
         }
 
         return $message;

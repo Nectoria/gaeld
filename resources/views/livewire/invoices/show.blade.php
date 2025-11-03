@@ -74,25 +74,9 @@ new class extends Component {
         $generator = app(QrInvoiceGenerator::class);
         $path = $generator->generate($this->invoice, app()->getLocale());
 
-        dd($path);
-
-        try {
-            $generator = app(QrInvoiceGenerator::class);
-            $path = $generator->generate($this->invoice, app()->getLocale());
-
-            dd($path);
-
-            return response()->streamDownload(function () use ($path) {
-                echo file_get_contents($path);
-                // Clean up temp file
-                @unlink($path);
-            }, $this->invoice->invoice_number . '.pdf', [
-                'Content-Type' => 'application/pdf',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Failed to generate PDF: ' . $e->getMessage());
-            return response()->streamDownload(function () {}, 'error.pdf');
-        }
+        return response()->streamDownload(function () use ($path) {
+            readfile($path);
+        }, 'invoice_' . $this->invoice->invoice_number . '.pdf');
     }
 }; ?>
 
