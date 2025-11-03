@@ -80,10 +80,15 @@ new class extends Component {
     public function updatedContactId(): void
     {
         if ($this->contact_id) {
-            $contact = Contact::find($this->contact_id);
-            if ($contact) {
+            // Global scope automatically filters by current company, but using findOrFail for explicit validation
+            try {
+                $contact = Contact::findOrFail($this->contact_id);
                 $this->payment_term_days = $contact->payment_term_days;
                 $this->calculateDueDate();
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                // Contact not found or doesn't belong to current company
+                $this->contact_id = null;
+                $this->addError('contact_id', 'Selected contact is not valid.');
             }
         }
     }
