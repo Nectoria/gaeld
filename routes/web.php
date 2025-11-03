@@ -24,7 +24,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth', 'verified', 'has.company'])->group(function () {
     // Contact routes
-    Volt::route('contacts', 'contacts.index')
+    Route::get('contacts', \App\Livewire\Contacts\Index::class)
         ->name('contacts.index');
     Volt::route('contacts/create', 'contacts.create')
         ->name('contacts.create');
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified', 'has.company'])->group(function () {
     Volt::route('banking', 'banking.index')->name('banking');
 
     // Invoice routes
-    Volt::route('invoices', 'invoices.index')
+    Route::get('invoices', \App\Livewire\Invoices\Index::class)
         ->name('invoices.index');
     Volt::route('invoices/create', 'invoices.create')
         ->name('invoices.create');
