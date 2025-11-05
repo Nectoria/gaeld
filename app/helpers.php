@@ -28,3 +28,13 @@ if (! function_exists('currentCompany')) {
         return app(TenantService::class)->current();
     }
 }
+
+if (! function_exists('money')) {
+    /**
+     * Format money amount (in cents) to a display string
+     */
+    function money(int $cents, string $currency = 'CHF'): string
+    {
+        return app(\App\Services\InvoiceCalculationService::class)->formatMoney($cents, $currency);
+    }
+}
