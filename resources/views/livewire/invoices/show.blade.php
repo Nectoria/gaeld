@@ -80,6 +80,7 @@ new class extends Component {
     }
 }; ?>
 
+@section('title', $invoice->invoice_number)
 <x-page-layout max-width="5xl">
     <div class="mb-6">
         <div class="flex items-center justify-between">

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Company;
-use App\Models\Contact;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;

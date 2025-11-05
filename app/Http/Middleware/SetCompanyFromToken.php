@@ -20,7 +20,7 @@ class SetCompanyFromToken
 
             if ($token && $token->company_id) {
                 // Verify user still has access to this company
-                if (!$request->user()->belongsToCompany($token->company_id)) {
+                if (! $request->user()->belongsToCompany($token->company_id)) {
                     return response()->json([
                         'error' => [
                             'message' => 'Token company access revoked',

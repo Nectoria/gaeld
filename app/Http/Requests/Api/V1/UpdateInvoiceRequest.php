@@ -87,7 +87,7 @@ class UpdateInvoiceRequest extends FormRequest
 
         if (in_array($invoice->status, ['paid', 'cancelled'])) {
             throw new \Illuminate\Auth\Access\AuthorizationException(
-                'Cannot update invoices with status: ' . $invoice->status
+                'Cannot update invoices with status: '.$invoice->status
             );
         }
 

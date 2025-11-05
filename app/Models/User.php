@@ -127,7 +127,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function createCompanyToken(int $companyId, string $name, array $abilities = ['*']): \Laravel\Sanctum\NewAccessToken
     {
         // Verify user belongs to company
-        if (!$this->belongsToCompany($companyId)) {
+        if (! $this->belongsToCompany($companyId)) {
             throw new \InvalidArgumentException('User does not belong to this company');
         }
 

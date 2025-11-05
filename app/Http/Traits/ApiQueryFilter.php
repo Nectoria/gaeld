@@ -13,7 +13,7 @@ trait ApiQueryFilter
     protected function applyFilters(Builder $query, Request $request, array $filterableFields = []): Builder
     {
         foreach ($filterableFields as $field => $config) {
-            if (!$request->has($field)) {
+            if (! $request->has($field)) {
                 continue;
             }
 
@@ -79,6 +79,6 @@ trait ApiQueryFilter
         string $defaultOrder = 'desc'
     ): Builder {
         return $this->applyFilters($query, $request, $filterableFields)
-            ->pipe(fn($q) => $this->applySorting($q, $request, $defaultSort, $defaultOrder));
+            ->pipe(fn ($q) => $this->applySorting($q, $request, $defaultSort, $defaultOrder));
     }
 }

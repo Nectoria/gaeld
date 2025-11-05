@@ -78,6 +78,7 @@ new class extends Component {
     }
 }; ?>
 
+@section('title', __('New Contact'))
 <x-page-layout>
     <x-page-header
         :title="__('Create Contact')"

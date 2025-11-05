@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 new class extends Component {
     #[Locked]
     public bool $twoFactorEnabled;
-
+    
     #[Locked]
     public bool $requiresConfirmation;
 

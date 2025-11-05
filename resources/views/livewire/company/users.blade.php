@@ -169,6 +169,7 @@ new class extends Component {
     }
 }; ?>
 
+@section('title', __('Company Users'))
 <section class="w-full">
     @include('partials.company-settings-heading')
 

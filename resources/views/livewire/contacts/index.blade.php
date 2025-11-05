@@ -1,3 +1,4 @@
+@section('title', __('Contacts'))
 <x-page-layout>
     <div class="mb-6">
         <div class="flex items-center justify-between">

@@ -76,7 +76,7 @@ class StoreInvoiceRequest extends FormRequest
             $company = $this->route('company');
             $contact = $company->contacts()->find($this->contact_id);
 
-            if (!$contact) {
+            if (! $contact) {
                 $this->merge(['contact_id' => null]);
             }
         }
