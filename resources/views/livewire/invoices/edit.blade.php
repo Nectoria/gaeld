@@ -163,7 +163,6 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center justify-between">
@@ -172,15 +171,15 @@ new class extends Component {
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
-                        Back to Invoice
+                        {{ __('Back to Invoice') }}
                     </a>
-                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">Edit Invoice</h1>
+                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">{{ __('Edit Invoice') }}</h1>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                         {{ $invoice->invoice_number }}
                     </p>
                 </div>
                 <flux:button href="{{ route('invoices.show', $invoice) }}" variant="ghost" wire:navigate>
-                    Cancel
+                    {{ __('Cancel') }}
                 </flux:button>
             </div>
         </div>
@@ -192,7 +191,7 @@ new class extends Component {
                     <!-- Basic Information -->
                     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                            Invoice Details
+                            {{ __('Invoice Details') }}
                         </h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -200,8 +199,8 @@ new class extends Component {
                             <div class="md:col-span-2">
                                 <flux:select
                                     wire:model.live="contact_id"
-                                    label="Customer"
-                                    placeholder="Select a customer"
+                                    :label="__('Customer')"
+                                    :placeholder="__('Select a customer')"
                                     required
                                 >
                                     @foreach($this->contacts as $contact)
@@ -217,7 +216,7 @@ new class extends Component {
                                 <flux:input
                                     wire:model.live="invoice_date"
                                     type="date"
-                                    label="Invoice Date"
+                                    :label="__('Invoice Date')"
                                     required
                                 />
                             </div>
@@ -227,7 +226,7 @@ new class extends Component {
                                 <flux:input
                                     wire:model.live="payment_term_days"
                                     type="number"
-                                    label="Payment Terms (days)"
+                                    :label="__('Payment Terms (days)')"
                                     min="0"
                                     required
                                 />
@@ -238,7 +237,7 @@ new class extends Component {
                                 <flux:input
                                     wire:model="due_date"
                                     type="date"
-                                    label="Due Date"
+                                    :label="__('Due Date')"
                                     required
                                 />
                             </div>
@@ -249,7 +248,7 @@ new class extends Component {
                                     wire:model.live="tax_rate"
                                     type="number"
                                     step="0.01"
-                                    label="Tax Rate (%)"
+                                    :label="__('Tax Rate (%)')"
                                     min="0"
                                     max="100"
                                 />
@@ -261,7 +260,7 @@ new class extends Component {
                     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                                Items
+                                {{ __('Items') }}
                             </h2>
                             <flux:button
                                 wire:click="addItem"
@@ -269,7 +268,7 @@ new class extends Component {
                                 variant="ghost"
                                 icon="plus"
                             >
-                                Add Item
+                                {{ __('Add Item') }}
                             </flux:button>
                         </div>
 
@@ -278,7 +277,7 @@ new class extends Component {
                                 <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-4">
                                     <div class="flex items-start justify-between mb-3">
                                         <h3 class="text-sm font-medium text-zinc-900 dark:text-white">
-                                            Item {{ $index + 1 }}
+                                            {{ __('Item') }} {{ $index + 1 }}
                                         </h3>
                                         @if(count($items) > 1)
                                             <flux:button
@@ -306,7 +305,7 @@ new class extends Component {
                                         <div class="md:col-span-6">
                                             <flux:textarea
                                                 wire:model="items.{{ $index }}.description"
-                                                placeholder="Description (optional)"
+                                                :placeholder="__('Description (optional)')"
                                                 rows="2"
                                             />
                                         </div>
@@ -359,28 +358,28 @@ new class extends Component {
                     <!-- Additional Information -->
                     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                            Additional Information
+                            {{ __('Additional Information') }}
                         </h2>
 
                         <div class="space-y-4">
                             <flux:textarea
                                 wire:model="notes"
-                                label="Internal Notes"
-                                placeholder="Notes (not visible to customer)"
+                                :label="__('Internal Notes')"
+                                :placeholder="__('Notes (not visible to customer)')"
                                 rows="3"
                             />
 
                             <flux:textarea
                                 wire:model="terms"
-                                label="Terms & Conditions"
-                                placeholder="Payment terms and conditions"
+                                :label="__('Terms & Conditions')"
+                                :placeholder="__('Payment terms and conditions')"
                                 rows="3"
                             />
 
                             <flux:textarea
                                 wire:model="footer"
-                                label="Footer"
-                                placeholder="Footer text"
+                                :label="__('Footer')"
+                                :placeholder="__('Footer text')"
                                 rows="2"
                             />
                         </div>
@@ -392,12 +391,12 @@ new class extends Component {
                     <!-- Totals -->
                     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                            Totals
+                            {{ __('Totals') }}
                         </h2>
 
                         <div class="space-y-2">
                             <div class="flex justify-between text-sm">
-                                <span class="text-zinc-600 dark:text-zinc-400">Subtotal</span>
+                                <span class="text-zinc-600 dark:text-zinc-400">{{ __('Subtotal') }}</span>
                                 <span class="font-medium text-zinc-900 dark:text-white">
                                     CHF {{ $this->formatMoney($this->invoiceTotals['subtotal']) }}
                                 </span>
@@ -405,7 +404,7 @@ new class extends Component {
 
                             <div class="flex justify-between text-sm">
                                 <span class="text-zinc-600 dark:text-zinc-400">
-                                    Tax ({{ number_format($tax_rate, 2) }}%)
+                                    {{ __('Tax') }} ({{ number_format($tax_rate, 2) }}%)
                                 </span>
                                 <span class="font-medium text-zinc-900 dark:text-white">
                                     CHF {{ $this->formatMoney($this->invoiceTotals['tax_amount']) }}
@@ -415,7 +414,7 @@ new class extends Component {
                             <div class="border-t border-zinc-200 dark:border-zinc-700 pt-2 mt-2">
                                 <div class="flex justify-between">
                                     <span class="text-base font-semibold text-zinc-900 dark:text-white">
-                                        Total
+                                        {{ __('Total') }}
                                     </span>
                                     <span class="text-lg font-bold text-zinc-900 dark:text-white">
                                         CHF {{ $this->formatMoney($this->invoiceTotals['total']) }}
@@ -428,7 +427,7 @@ new class extends Component {
                     <!-- Actions -->
                     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                            Actions
+                            {{ __('Actions') }}
                         </h2>
 
                         <div class="space-y-3">
@@ -437,7 +436,7 @@ new class extends Component {
                                 variant="primary"
                                 class="w-full"
                             >
-                                Update Invoice
+                                {{ __('Update Invoice') }}
                             </flux:button>
 
                             <flux:button
@@ -446,12 +445,11 @@ new class extends Component {
                                 class="w-full"
                                 wire:navigate
                             >
-                                Cancel
+                                {{ __('Cancel') }}
                             </flux:button>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
-    </div>
 </div>

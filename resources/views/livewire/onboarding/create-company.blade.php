@@ -75,7 +75,7 @@ new class extends Component {
             tenant()->clearCache(Auth::user());
         });
 
-        session()->flash('success', 'Company created successfully!');
+        session()->flash('success', __('Company created successfully!'));
         $this->redirect(route('dashboard'), navigate: true);
     }
 }; ?>
@@ -86,10 +86,10 @@ new class extends Component {
         <div class="text-center mb-8">
             <x-app-logo class="mx-auto h-12 w-auto" />
             <h1 class="mt-6 text-3xl font-bold text-zinc-900 dark:text-white">
-                Welcome to Gäld
+                {{ __('Welcome to Gäld') }}
             </h1>
             <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Let's set up your company to get started
+                {{ __("Let's set up your company to get started") }}
             </p>
         </div>
 
@@ -101,8 +101,8 @@ new class extends Component {
                         1
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-zinc-900 dark:text-white">Company Setup</p>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Basic information</p>
+                        <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ __('Company Setup') }}</p>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Basic information') }}</p>
                     </div>
                 </div>
                 <div class="w-16 h-0.5 bg-zinc-300 dark:bg-zinc-700 mx-4"></div>
@@ -111,8 +111,8 @@ new class extends Component {
                         2
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-zinc-900 dark:text-white">Invite Team</p>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Coming next</p>
+                        <p class="text-sm font-medium text-zinc-900 dark:text-white">{{ __('Invite Team') }}</p>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Coming next') }}</p>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@ new class extends Component {
                 <!-- Basic Information -->
                 <div>
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                        Basic Information
+                        {{ __('Basic Information') }}
                     </h2>
 
                     <div class="space-y-4">
@@ -132,7 +132,7 @@ new class extends Component {
                         <flux:input
                             wire:model="name"
                             type="text"
-                            label="Company Name"
+                            :label="__('Company Name')"
                             placeholder="ACME Corp AG"
                             required
                             autofocus
@@ -142,7 +142,7 @@ new class extends Component {
                         <flux:input
                             wire:model="legal_name"
                             type="text"
-                            label="Legal Name (optional)"
+                            :label="__('Legal Name (optional)')"
                             placeholder="ACME Corporation AG"
                         />
 
@@ -151,7 +151,7 @@ new class extends Component {
                             <flux:input
                                 wire:model="vat_number"
                                 type="text"
-                                label="VAT Number (optional)"
+                                :label="__('VAT Number (optional)')"
                                 placeholder="CHE-123.456.789"
                             />
 
@@ -159,7 +159,7 @@ new class extends Component {
                             <flux:input
                                 wire:model="email"
                                 type="email"
-                                label="Company Email (optional)"
+                                :label="__('Company Email (optional)')"
                                 placeholder="info@acme.com"
                             />
                         </div>
@@ -169,7 +169,7 @@ new class extends Component {
                 <!-- Address -->
                 <div>
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                        Address (optional)
+                        {{ __('Address (optional)') }}
                     </h2>
 
                     <div class="space-y-4">
@@ -178,14 +178,14 @@ new class extends Component {
                                 <flux:input
                                     wire:model="street"
                                     type="text"
-                                    label="Street"
+                                    :label="__('Street')"
                                     placeholder="Hauptstrasse"
                                 />
                             </div>
                             <flux:input
                                 wire:model="street_number"
                                 type="text"
-                                label="Number"
+                                :label="__('Number')"
                                 placeholder="123"
                             />
                         </div>
@@ -194,14 +194,14 @@ new class extends Component {
                             <flux:input
                                 wire:model="postal_code"
                                 type="text"
-                                label="Postal Code"
+                                :label="__('Postal Code')"
                                 placeholder="8000"
                             />
                             <div class="col-span-2">
                                 <flux:input
                                     wire:model="city"
                                     type="text"
-                                    label="City"
+                                    :label="__('City')"
                                     placeholder="Zürich"
                                 />
                             </div>
@@ -212,14 +212,14 @@ new class extends Component {
                 <!-- Preferences -->
                 <div>
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                        Preferences
+                        {{ __('Preferences') }}
                     </h2>
 
                     <div class="grid grid-cols-2 gap-4">
                         <flux:input
                             wire:model="country"
                             type="text"
-                            label="Country Code"
+                            :label="__('Country Code')"
                             placeholder="CH"
                             maxlength="2"
                             required
@@ -227,7 +227,7 @@ new class extends Component {
                         <flux:input
                             wire:model="currency"
                             type="text"
-                            label="Currency"
+                            :label="__('Currency')"
                             placeholder="CHF"
                             maxlength="3"
                             required
@@ -238,10 +238,10 @@ new class extends Component {
                 <!-- Info Box -->
                 <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
                     <h3 class="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">
-                        Don't worry!
+                        {{ __("Don't worry!") }}
                     </h3>
                     <p class="text-sm text-blue-800 dark:text-blue-400">
-                        You can update all of this information later in Company Settings. Let's just get you started with the basics.
+                        {{ __("You can update all of this information later in Company Settings. Let's just get you started with the basics.") }}
                     </p>
                 </div>
 
@@ -252,7 +252,7 @@ new class extends Component {
                         variant="primary"
                         class="px-8"
                     >
-                        Create Company & Continue
+                        {{ __('Create Company & Continue') }}
                     </flux:button>
                 </div>
             </div>
@@ -260,7 +260,7 @@ new class extends Component {
 
         <!-- Help Text -->
         <p class="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
-            Need help? Contact support at <a href="mailto:support@gaeld.ch" class="text-blue-600 dark:text-blue-400 hover:underline">support@gaeld.ch</a>
+            {{ __('Need help? Contact support at') }} <a href="mailto:support@gaeld.ch" class="text-blue-600 dark:text-blue-400 hover:underline">support@gaeld.ch</a>
         </p>
     </div>
 </div>

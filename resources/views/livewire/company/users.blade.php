@@ -60,7 +60,7 @@ new class extends Component {
 
             $this->reset(['email', 'role', 'showInviteModal']);
             $this->dispatch('invitation-sent');
-            session()->flash('success', 'Invitation sent successfully!');
+            session()->flash('success', __('Invitation sent successfully!'));
         } catch (ValidationException $e) {
             foreach ($e->errors() as $key => $messages) {
                 $this->addError($key, $messages[0]);
@@ -74,7 +74,7 @@ new class extends Component {
 
         try {
             $userService->removeUser($this->company, $userId, Auth::id());
-            session()->flash('success', 'User removed from company.');
+            session()->flash('success', __('User removed from company.'));
         } catch (ValidationException $e) {
             foreach ($e->errors() as $key => $messages) {
                 $this->addError($key, $messages[0]);
@@ -88,7 +88,7 @@ new class extends Component {
 
         try {
             $invitationService->cancelInvitation($invitationId, $this->company->id);
-            session()->flash('success', 'Invitation cancelled.');
+            session()->flash('success', __('Invitation cancelled.'));
         } catch (\Exception $e) {
             abort(403);
         }
@@ -121,7 +121,7 @@ new class extends Component {
         try {
             $userService->updateUserRole($this->company, $this->selectedUserId, $this->updateRole, Auth::id());
             $this->reset(['selectedUserId', 'updateRole', 'showUpdateRoleModal']);
-            session()->flash('success', 'User role updated successfully.');
+            session()->flash('success', __('User role updated successfully.'));
         } catch (ValidationException $e) {
             foreach ($e->errors() as $key => $messages) {
                 $this->addError($key, $messages[0]);
@@ -136,7 +136,7 @@ new class extends Component {
         // Only owners can transfer ownership
         $currentUserPivot = Auth::user()->companies()->where('company_id', $this->company->id)->first()?->pivot;
         if (!$currentUserPivot || !$currentUserPivot->isOwner()) {
-            abort(403, 'Only owners can transfer ownership.');
+            abort(403, __('Only owners can transfer ownership.'));
         }
 
         $this->selectedUserId = $userId;
@@ -150,7 +150,7 @@ new class extends Component {
         try {
             $userService->transferOwnership($this->company, Auth::user(), $this->selectedUserId);
             $this->reset(['selectedUserId', 'showTransferOwnershipModal']);
-            session()->flash('success', 'Ownership transferred successfully. You are now an admin.');
+            session()->flash('success', __('Ownership transferred successfully. You are now an admin.'));
         } catch (\Exception $e) {
             abort(403, $e->getMessage());
         }
@@ -194,7 +194,7 @@ new class extends Component {
             <div class="bg-white dark:bg-zinc-800 rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                        Active Members ({{ $this->users->count() }})
+                        {{ __('Active Members (:count)', ['count' => $this->users->count()]) }}
                     </h2>
                 </div>
 
@@ -202,10 +202,10 @@ new class extends Component {
                     <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
                         <thead class="bg-zinc-50 dark:bg-zinc-900">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">User</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Role</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Joined</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('User') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Role') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Joined') }}</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -222,7 +222,7 @@ new class extends Component {
                                                 <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                                     {{ $user->name }}
                                                     @if($user->id === Auth::id())
-                                                        <span class="text-xs text-zinc-500">(You)</span>
+                                                        <span class="text-xs text-zinc-500">{{ __('(You)') }}</span>
                                                     @endif
                                                 </div>
                                                 <div class="text-sm text-zinc-600 dark:text-zinc-400">
@@ -237,7 +237,7 @@ new class extends Component {
                                         </flux:badge>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
-                                        {{ $user->pivot->joined_at?->format('M d, Y') ?? 'N/A' }}
+                                        {{ $user->pivot->joined_at?->format('M d, Y') ?? __('N/A') }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
@@ -248,7 +248,7 @@ new class extends Component {
                                                         variant="ghost"
                                                         size="sm"
                                                     >
-                                                        Change Role
+                                                        {{ __('Change Role') }}
                                                     </flux:button>
 
                                                     @if($user->pivot->role !== 'owner')
@@ -257,17 +257,17 @@ new class extends Component {
                                                             variant="ghost"
                                                             size="sm"
                                                         >
-                                                            Make Owner
+                                                            {{ __('Make Owner') }}
                                                         </flux:button>
                                                     @endif
 
                                                     <flux:button
                                                         wire:click="removeUser({{ $user->id }})"
-                                                        wire:confirm="Are you sure you want to remove this user?"
+                                                        wire:confirm="{{ __('Are you sure you want to remove this user?') }}"
                                                         variant="ghost"
                                                         size="sm"
                                                     >
-                                                        Remove
+                                                        {{ __('Remove') }}
                                                     </flux:button>
                                                 @endcan
                                             @endif
@@ -285,7 +285,7 @@ new class extends Component {
                 <div class="bg-white dark:bg-zinc-800 rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">
-                            Pending Invitations ({{ $this->pendingInvitations->count() }})
+                            {{ __('Pending Invitations (:count)', ['count' => $this->pendingInvitations->count()]) }}
                         </h2>
                     </div>
 
@@ -293,11 +293,11 @@ new class extends Component {
                         <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
                             <thead class="bg-zinc-50 dark:bg-zinc-900">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Role</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Invited By</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Expires</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">Actions</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Email') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Role') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Invited By') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Expires') }}</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -321,11 +321,11 @@ new class extends Component {
                                             @can('manage_company_users')
                                                 <flux:button
                                                     wire:click="cancelInvitation({{ $invitation->id }})"
-                                                    wire:confirm="Are you sure you want to cancel this invitation?"
+                                                    wire:confirm="{{ __('Are you sure you want to cancel this invitation?') }}"
                                                     variant="ghost"
                                                     size="sm"
                                                 >
-                                                    Cancel
+                                                    {{ __('Cancel') }}
                                                 </flux:button>
                                             @endcan
                                         </td>
@@ -343,39 +343,39 @@ new class extends Component {
         <flux:modal name="invite-user-modal" wire:model="showInviteModal">
             <form wire:submit="inviteUser" class="space-y-6">
                 <div>
-                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Invite User</h2>
+                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Invite User') }}</h2>
                 </div>
 
                 <div class="space-y-4">
                     <flux:input
                         wire:model="email"
                         type="email"
-                        label="Email Address"
+                        :label="__('Email Address')"
                         placeholder="user@example.com"
                         required
                     />
 
                     <flux:select
                         wire:model="role"
-                        label="Role"
+                        :label="__('Role')"
                         required
                     >
-                        <option value="admin">Admin - Full access</option>
-                        <option value="accountant">Accountant - Manage invoices & contacts</option>
-                        <option value="employee">Employee - Limited access</option>
-                        <option value="viewer">Viewer - Read only</option>
+                        <option value="admin">{{ __('Admin - Full access') }}</option>
+                        <option value="accountant">{{ __('Accountant - Manage invoices & contacts') }}</option>
+                        <option value="employee">{{ __('Employee - Limited access') }}</option>
+                        <option value="viewer">{{ __('Viewer - Read only') }}</option>
                     </flux:select>
 
                     <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
                         <p class="text-sm text-blue-800 dark:text-blue-400">
-                            An invitation email will be sent with a link to join the company. The invitation will expire in 7 days.
+                            {{ __('An invitation email will be sent with a link to join the company. The invitation will expire in 7 days.') }}
                         </p>
                     </div>
                 </div>
 
                 <div class="flex justify-end gap-2">
-                    <flux:button variant="ghost" wire:click="$set('showInviteModal', false)">Cancel</flux:button>
-                    <flux:button type="submit" variant="primary">Send Invitation</flux:button>
+                    <flux:button variant="ghost" wire:click="$set('showInviteModal', false)">{{ __('Cancel') }}</flux:button>
+                    <flux:button type="submit" variant="primary">{{ __('Send Invitation') }}</flux:button>
                 </div>
             </form>
         </flux:modal>
@@ -386,32 +386,32 @@ new class extends Component {
         <flux:modal name="update-role-modal" wire:model="showUpdateRoleModal">
             <form wire:submit="updateUserRole" class="space-y-6">
                 <div>
-                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Update User Role</h2>
+                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Update User Role') }}</h2>
                 </div>
 
                 <div class="space-y-4">
                     <flux:select
                         wire:model="updateRole"
-                        label="New Role"
+                        :label="__('New Role')"
                         required
                     >
-                        <option value="owner">Owner - Full control including ownership transfer</option>
-                        <option value="admin">Admin - Full access</option>
-                        <option value="accountant">Accountant - Manage invoices & contacts</option>
-                        <option value="employee">Employee - Limited access</option>
-                        <option value="viewer">Viewer - Read only</option>
+                        <option value="owner">{{ __('Owner - Full control including ownership transfer') }}</option>
+                        <option value="admin">{{ __('Admin - Full access') }}</option>
+                        <option value="accountant">{{ __('Accountant - Manage invoices & contacts') }}</option>
+                        <option value="employee">{{ __('Employee - Limited access') }}</option>
+                        <option value="viewer">{{ __('Viewer - Read only') }}</option>
                     </flux:select>
 
                     <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3">
                         <p class="text-sm text-yellow-800 dark:text-yellow-400">
-                            Changing a user's role will update their permissions immediately.
+                            {{ __('Changing a user\'s role will update their permissions immediately.') }}
                         </p>
                     </div>
                 </div>
 
                 <div class="flex justify-end gap-2">
-                    <flux:button variant="ghost" wire:click="$set('showUpdateRoleModal', false)">Cancel</flux:button>
-                    <flux:button type="submit" variant="primary">Update Role</flux:button>
+                    <flux:button variant="ghost" wire:click="$set('showUpdateRoleModal', false)">{{ __('Cancel') }}</flux:button>
+                    <flux:button type="submit" variant="primary">{{ __('Update Role') }}</flux:button>
                 </div>
             </form>
         </flux:modal>
@@ -422,30 +422,30 @@ new class extends Component {
         <flux:modal name="transfer-ownership-modal" wire:model="showTransferOwnershipModal">
             <form wire:submit="transferOwnership" class="space-y-6">
                 <div>
-                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Transfer Ownership</h2>
+                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Transfer Ownership') }}</h2>
                 </div>
 
                 <div class="space-y-4">
                     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
                         <h3 class="text-sm font-medium text-red-900 dark:text-red-300 mb-2">
-                            Warning: This action is permanent
+                            {{ __('Warning: This action is permanent') }}
                         </h3>
                         <ul class="text-sm text-red-800 dark:text-red-400 space-y-1 list-disc list-inside">
-                            <li>You will become an admin and lose owner privileges</li>
-                            <li>The selected user will become the new owner</li>
-                            <li>Only owners can transfer ownership</li>
-                            <li>This action cannot be undone without the new owner's consent</li>
+                            <li>{{ __('You will become an admin and lose owner privileges') }}</li>
+                            <li>{{ __('The selected user will become the new owner') }}</li>
+                            <li>{{ __('Only owners can transfer ownership') }}</li>
+                            <li>{{ __('This action cannot be undone without the new owner\'s consent') }}</li>
                         </ul>
                     </div>
 
                     <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                        Are you sure you want to transfer ownership of this company?
+                        {{ __('Are you sure you want to transfer ownership of this company?') }}
                     </p>
                 </div>
 
                 <div class="flex justify-end gap-2">
-                    <flux:button variant="ghost" wire:click="$set('showTransferOwnershipModal', false)">Cancel</flux:button>
-                    <flux:button type="submit" variant="primary">Transfer Ownership</flux:button>
+                    <flux:button variant="ghost" wire:click="$set('showTransferOwnershipModal', false)">{{ __('Cancel') }}</flux:button>
+                    <flux:button type="submit" variant="primary">{{ __('Transfer Ownership') }}</flux:button>
                 </div>
             </form>
         </flux:modal>

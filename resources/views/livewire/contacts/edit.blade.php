@@ -110,7 +110,6 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center justify-between">
@@ -119,21 +118,20 @@ new class extends Component {
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
-                        Back to Contacts
+                        {{ __('Back to Contacts') }}
                     </a>
-                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">Edit Contact</h1>
+                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">{{ __('Edit Contact') }}</h1>
                     <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                         {{ $contact->name }}
                     </p>
                 </div>
                 <flux:button href="{{ route('contacts.index') }}" variant="ghost" wire:navigate>
-                    Cancel
+                    {{ __('Cancel') }}
                 </flux:button>
             </div>
         </div>
 
         <form wire:submit="update">
-            <x-contacts.form-fields submitText="Update Contact" />
+            <x-contacts.form-fields :submitText="__('Update Contact')" />
         </form>
-    </div>
 </div>

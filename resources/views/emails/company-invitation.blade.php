@@ -1,20 +1,20 @@
 <x-mail::message>
-# You've Been Invited to Join {{ $companyName }}
+# {{ __("You've Been Invited to Join :company", ['company' => $companyName]) }}
 
-Hello!
+{{ __('Hello!') }}
 
-**{{ $inviterName }}** has invited you to join **{{ $companyName }}** on {{ config('app.name') }}.
+{{ __(':inviter has invited you to join :company on :app.', ['inviter' => "**{$inviterName}**", 'company' => "**{$companyName}**", 'app' => config('app.name')]) }}
 
-You've been invited with the role of **{{ $role }}**, which will give you access to collaborate with the team.
+{{ __("You've been invited with the role of :role, which will give you access to collaborate with the team.", ['role' => "**{$role}**"]) }}
 
 <x-mail::button :url="$acceptUrl">
-Accept Invitation
+{{ __('Accept Invitation') }}
 </x-mail::button>
 
-This invitation will expire on **{{ $expiresAt }}**.
+{{ __('This invitation will expire on :date.', ['date' => "**{$expiresAt}**"]) }}
 
-If you did not expect this invitation, you can safely ignore this email.
+{{ __('If you did not expect this invitation, you can safely ignore this email.') }}
 
-Thanks,<br>
+{{ __('Thanks') }},<br>
 {{ config('app.name') }}
 </x-mail::message>

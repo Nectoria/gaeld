@@ -1,4 +1,4 @@
-@props(['submitText' => 'Save Contact'])
+@props(['submitText' => __('Save Contact')])
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content -->
@@ -6,7 +6,7 @@
         <!-- Basic Information -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Basic Information
+                {{ __('Basic Information') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -14,12 +14,12 @@
                 <div>
                     <flux:select
                         wire:model="type"
-                        label="Type"
+                        :label="__('Type')"
                         required
                     >
-                        <option value="customer">Customer</option>
-                        <option value="vendor">Vendor</option>
-                        <option value="both">Both</option>
+                        <option value="customer">{{ __('Customer') }}</option>
+                        <option value="vendor">{{ __('Vendor') }}</option>
+                        <option value="both">{{ __('Both') }}</option>
                     </flux:select>
                 </div>
 
@@ -27,7 +27,7 @@
                 <div class="flex items-center pt-8">
                     <flux:checkbox
                         wire:model="is_active"
-                        label="Active"
+                        :label="__('Active')"
                     />
                 </div>
 
@@ -36,7 +36,7 @@
                     <flux:input
                         wire:model="name"
                         type="text"
-                        label="Company Name"
+                        :label="__('Company Name')"
                         placeholder="ACME Corp AG"
                         required
                     />
@@ -47,7 +47,7 @@
                     <flux:input
                         wire:model="contact_person"
                         type="text"
-                        label="Contact Person"
+                        :label="__('Contact Person')"
                         placeholder="John Doe"
                     />
                 </div>
@@ -57,7 +57,7 @@
         <!-- Contact Information -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Contact Information
+                {{ __('Contact Information') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,7 +66,7 @@
                     <flux:input
                         wire:model="email"
                         type="email"
-                        label="Email"
+                        :label="__('Email')"
                         placeholder="contact@example.com"
                     />
                 </div>
@@ -76,7 +76,7 @@
                     <flux:input
                         wire:model="phone"
                         type="text"
-                        label="Phone"
+                        :label="__('Phone')"
                         placeholder="+41 44 123 45 67"
                     />
                 </div>
@@ -86,7 +86,7 @@
                     <flux:input
                         wire:model="mobile"
                         type="text"
-                        label="Mobile"
+                        :label="__('Mobile')"
                         placeholder="+41 79 123 45 67"
                     />
                 </div>
@@ -96,7 +96,7 @@
                     <flux:input
                         wire:model="website"
                         type="url"
-                        label="Website"
+                        :label="__('Website')"
                         placeholder="https://example.com"
                     />
                 </div>
@@ -106,7 +106,7 @@
         <!-- Address -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Address
+                {{ __('Address') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -115,7 +115,7 @@
                     <flux:input
                         wire:model="street"
                         type="text"
-                        label="Street"
+                        :label="__('Street')"
                         placeholder="Bahnhofstrasse"
                     />
                 </div>
@@ -125,7 +125,7 @@
                     <flux:input
                         wire:model="street_number"
                         type="text"
-                        label="Number"
+                        :label="__('Number')"
                         placeholder="123"
                     />
                 </div>
@@ -135,7 +135,7 @@
                     <flux:input
                         wire:model="postal_code"
                         type="text"
-                        label="Postal Code"
+                        :label="__('Postal Code')"
                         placeholder="8001"
                     />
                 </div>
@@ -145,7 +145,7 @@
                     <flux:input
                         wire:model="city"
                         type="text"
-                        label="City"
+                        :label="__('City')"
                         placeholder="Zürich"
                     />
                 </div>
@@ -155,7 +155,7 @@
                     <flux:input
                         wire:model="country"
                         type="text"
-                        label="Country"
+                        :label="__('Country')"
                         placeholder="CH"
                         maxlength="2"
                         required
@@ -167,7 +167,7 @@
         <!-- Tax & Legal -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Tax & Legal
+                {{ __('Tax & Legal') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -176,7 +176,7 @@
                     <flux:input
                         wire:model="vat_number"
                         type="text"
-                        label="VAT Number"
+                        :label="__('VAT Number')"
                         placeholder="CHE-123.456.789 MWST"
                     />
                 </div>
@@ -186,7 +186,7 @@
                     <flux:input
                         wire:model="tax_id"
                         type="text"
-                        label="Tax ID"
+                        :label="__('Tax ID')"
                         placeholder="Optional tax identifier"
                     />
                 </div>
@@ -196,7 +196,7 @@
         <!-- Banking -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Banking Information
+                {{ __('Banking Information') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,7 +205,7 @@
                     <flux:input
                         wire:model="iban"
                         type="text"
-                        label="IBAN"
+                        :label="__('IBAN')"
                         placeholder="CH93 0076 2011 6238 5295 7"
                     />
                 </div>
@@ -215,7 +215,7 @@
                     <flux:input
                         wire:model="bank_name"
                         type="text"
-                        label="Bank Name"
+                        :label="__('Bank Name')"
                         placeholder="UBS Switzerland AG"
                     />
                 </div>
@@ -225,7 +225,7 @@
         <!-- Business Terms -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Business Terms
+                {{ __('Business Terms') }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -234,7 +234,7 @@
                     <flux:input
                         wire:model="payment_term_days"
                         type="number"
-                        label="Payment Terms (days)"
+                        :label="__('Payment Terms (days)')"
                         min="0"
                         max="365"
                         required
@@ -246,7 +246,7 @@
                     <flux:input
                         wire:model="currency"
                         type="text"
-                        label="Currency"
+                        :label="__('Currency')"
                         placeholder="CHF"
                         maxlength="3"
                         required
@@ -258,7 +258,7 @@
                     <flux:input
                         wire:model="reference_number"
                         type="text"
-                        label="Reference Number"
+                        :label="__('Reference Number')"
                         placeholder="Optional reference"
                     />
                 </div>
@@ -268,12 +268,12 @@
         <!-- Notes -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Notes
+                {{ __('Notes') }}
             </h2>
 
             <flux:textarea
                 wire:model="notes"
-                placeholder="Internal notes about this contact..."
+                placeholder="{{ __('Internal notes about this contact...') }}"
                 rows="4"
             />
         </div>
@@ -284,7 +284,7 @@
         <!-- Actions -->
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow p-6">
             <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
-                Actions
+                {{ __('Actions') }}
             </h2>
 
             <div class="space-y-3">
@@ -302,7 +302,7 @@
                     class="w-full"
                     wire:navigate
                 >
-                    Cancel
+                    {{ __('Cancel') }}
                 </flux:button>
             </div>
         </div>
@@ -310,13 +310,13 @@
         <!-- Help Text -->
         <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
             <h3 class="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">
-                Quick Tips
+                {{ __('Quick Tips') }}
             </h3>
             <ul class="text-sm text-blue-800 dark:text-blue-400 space-y-1 list-disc list-inside">
-                <li>Only company name is required</li>
-                <li>Add payment terms for automatic invoice due dates</li>
-                <li>VAT number is needed for invoicing</li>
-                <li>Customer contacts appear in invoice creation</li>
+                <li>{{ __('Only company name is required') }}</li>
+                <li>{{ __('Add payment terms for automatic invoice due dates') }}</li>
+                <li>{{ __('VAT number is needed for invoicing') }}</li>
+                <li>{{ __('Customer contacts appear in invoice creation') }}</li>
             </ul>
         </div>
     </div>

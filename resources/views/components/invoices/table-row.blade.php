@@ -22,7 +22,7 @@ $calculator = app(InvoiceCalculationService::class);
         </div>
         @if($invoice->reference_number)
             <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                Ref: {{ $invoice->reference_number }}
+                {{ __('Ref:') }} {{ $invoice->reference_number }}
             </div>
         @endif
     </td>
@@ -49,7 +49,7 @@ $calculator = app(InvoiceCalculationService::class);
                 class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-300"
                 wire:navigate
             >
-                View
+                {{ __('View') }}
             </a>
             @if($invoice->status === 'draft')
                 <a
@@ -57,7 +57,7 @@ $calculator = app(InvoiceCalculationService::class);
                     class="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-300"
                     wire:navigate
                 >
-                    Edit
+                    {{ __('Edit') }}
                 </a>
             @endif
         </div>

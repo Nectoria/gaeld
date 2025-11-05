@@ -36,7 +36,7 @@ new class extends Component {
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
-                        <span class="truncate text-sm">{{ $this->currentCompany?->name ?? 'No Company' }}</span>
+                        <span class="truncate text-sm">{{ $this->currentCompany?->name ?? __('No Company') }}</span>
                     </div>
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
@@ -45,7 +45,7 @@ new class extends Component {
 
                 <flux:menu class="w-full">
                     <div class="px-3 py-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-                        Switch Company
+                        {{ __('Switch Company') }}
                     </div>
                     @foreach($this->companies as $company)
                         <flux:menu.item
