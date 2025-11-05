@@ -11,12 +11,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasRoles, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -118,5 +119,41 @@ class User extends Authenticatable implements MustVerifyEmail
         $company = $this->companies()->where('companies.id', $companyId)->first();
 
         return $company?->pivot->role;
+    }
+
+    /**
+     * Create a company-scoped API token with specific abilities
+     */
+    public function createCompanyToken(int $companyId, string $name, array $abilities = ['*']): \Laravel\Sanctum\NewAccessToken
+    {
+        // Verify user belongs to company
+        if (!$this->belongsToCompany($companyId)) {
+            throw new \InvalidArgumentException('User does not belong to this company');
+        }
+
+        $token = $this->createToken($name, $abilities);
+
+        // Update the token with company_id
+        \DB::table('personal_access_tokens')
+            ->where('id', $token->accessToken->id)
+            ->update(['company_id' => $companyId]);
+
+        return $token;
+    }
+
+    /**
+     * Get all API tokens for a specific company
+     */
+    public function tokensForCompany(int $companyId)
+    {
+        return $this->tokens()->where('company_id', $companyId);
+    }
+
+    /**
+     * Revoke all tokens for a specific company
+     */
+    public function revokeCompanyTokens(int $companyId): int
+    {
+        return $this->tokensForCompany($companyId)->delete();
     }
 }
