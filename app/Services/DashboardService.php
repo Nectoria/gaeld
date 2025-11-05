@@ -141,7 +141,7 @@ class DashboardService
                 return [
                     'id' => $invoice->id,
                     'invoice_number' => $invoice->invoice_number,
-                    'customer' => $invoice->contact->company_name,
+                    'customer' => $invoice->contact->name,
                     'amount' => $invoice->total_amount,
                     'status' => $invoice->status,
                     'date' => $invoice->updated_at,
@@ -164,18 +164,18 @@ class DashboardService
             ->join('contacts', 'invoices.contact_id', '=', 'contacts.id')
             ->select(
                 'contacts.id',
-                'contacts.company_name',
+                'contacts.name',
                 DB::raw('COUNT(invoices.id) as invoice_count'),
                 DB::raw('SUM(invoices.total_amount) as total_revenue')
             )
-            ->groupBy('contacts.id', 'contacts.company_name')
+            ->groupBy('contacts.id', 'contacts.name')
             ->orderBy('total_revenue', 'desc')
             ->limit($limit)
             ->get()
             ->map(function ($customer) {
                 return [
                     'id' => $customer->id,
-                    'name' => $customer->company_name,
+                    'name' => $customer->name,
                     'invoice_count' => $customer->invoice_count,
                     'total_revenue' => $customer->total_revenue,
                 ];

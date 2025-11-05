@@ -30,15 +30,15 @@ class ContactController extends Controller
         // Define filterable fields
         $filters = [
             'type' => 'exact',
-            'status' => 'exact',
+            'is_active' => 'exact',
             'search' => [
                 'type' => 'search',
-                'columns' => ['company_name', 'first_name', 'last_name', 'email'],
+                'columns' => ['name', 'contact_person', 'email'],
             ],
         ];
 
         // Apply filters and sorting
-        $query = $this->applyQueryModifiers($query, $request, $filters, 'company_name', 'asc');
+        $query = $this->applyQueryModifiers($query, $request, $filters, 'name', 'asc');
 
         // Paginate
         $perPage = $this->getPaginationParams($request);
