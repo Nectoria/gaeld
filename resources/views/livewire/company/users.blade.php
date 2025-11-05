@@ -184,9 +184,9 @@ new class extends Component {
             @endcan
 
             @if (session('success'))
-                <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                    <p class="text-sm text-green-800 dark:text-green-300">{{ session('success') }}</p>
-                </div>
+                <x-alert type="success" class="mb-6">
+                    {{ session('success') }}
+                </x-alert>
             @endif
 
             <div class="space-y-6">
@@ -366,11 +366,9 @@ new class extends Component {
                         <option value="viewer">{{ __('Viewer - Read only') }}</option>
                     </flux:select>
 
-                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-                        <p class="text-sm text-blue-800 dark:text-blue-400">
-                            {{ __('An invitation email will be sent with a link to join the company. The invitation will expire in 7 days.') }}
-                        </p>
-                    </div>
+                    <x-alert type="info">
+                        {{ __('An invitation email will be sent with a link to join the company. The invitation will expire in 7 days.') }}
+                    </x-alert>
                 </div>
 
                 <div class="flex justify-end gap-2">
@@ -402,11 +400,9 @@ new class extends Component {
                         <option value="viewer">{{ __('Viewer - Read only') }}</option>
                     </flux:select>
 
-                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3">
-                        <p class="text-sm text-yellow-800 dark:text-yellow-400">
-                            {{ __('Changing a user\'s role will update their permissions immediately.') }}
-                        </p>
-                    </div>
+                    <x-alert type="warning">
+                        {{ __('Changing a user\'s role will update their permissions immediately.') }}
+                    </x-alert>
                 </div>
 
                 <div class="flex justify-end gap-2">
@@ -426,17 +422,14 @@ new class extends Component {
                 </div>
 
                 <div class="space-y-4">
-                    <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
-                        <h3 class="text-sm font-medium text-red-900 dark:text-red-300 mb-2">
-                            {{ __('Warning: This action is permanent') }}
-                        </h3>
-                        <ul class="text-sm text-red-800 dark:text-red-400 space-y-1 list-disc list-inside">
+                    <x-alert type="error" :title="__('Warning: This action is permanent')">
+                        <ul class="space-y-1 list-disc list-inside">
                             <li>{{ __('You will become an admin and lose owner privileges') }}</li>
                             <li>{{ __('The selected user will become the new owner') }}</li>
                             <li>{{ __('Only owners can transfer ownership') }}</li>
                             <li>{{ __('This action cannot be undone without the new owner\'s consent') }}</li>
                         </ul>
-                    </div>
+                    </x-alert>
 
                     <p class="text-sm text-zinc-600 dark:text-zinc-400">
                         {{ __('Are you sure you want to transfer ownership of this company?') }}

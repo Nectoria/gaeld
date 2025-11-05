@@ -178,11 +178,8 @@ new class extends Component {
                     </div>
 
                     <!-- Role Description -->
-                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
-                        <h3 class="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">
-                            {{ __("As :role, you'll be able to:", ['role' => ucfirst($invitation->role)]) }}
-                        </h3>
-                        <ul class="text-sm text-blue-800 dark:text-blue-400 space-y-1 list-disc list-inside">
+                    <x-alert type="info" :title="__('As :role, you\'ll be able to:', ['role' => ucfirst($invitation->role)])" class="mb-6">
+                        <ul class="space-y-1 list-disc list-inside">
                             @if($invitation->role === 'admin')
                                 <li>{{ __('Full access to all features') }}</li>
                                 <li>{{ __('Manage company settings') }}</li>
@@ -200,14 +197,12 @@ new class extends Component {
                                 <li>{{ __('Read-only access') }}</li>
                             @endif
                         </ul>
-                    </div>
+                    </x-alert>
 
                     @if(!Auth::check())
-                        <div class="mb-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
-                            <p class="text-sm text-yellow-800 dark:text-yellow-400">
-                                {{ __('You need to log in or create an account to accept this invitation.') }}
-                            </p>
-                        </div>
+                        <x-alert type="warning" class="mb-6">
+                            {{ __('You need to log in or create an account to accept this invitation.') }}
+                        </x-alert>
                     @endif
 
                     <!-- Actions -->

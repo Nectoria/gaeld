@@ -79,26 +79,18 @@ new class extends Component {
 }; ?>
 
 <div>
-    <!-- Header -->
-    <div class="mb-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <a href="{{ route('contacts.index') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 mb-2 inline-flex items-center" wire:navigate>
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    {{ __('Back to Contacts') }}
-                </a>
-                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">{{ __('Create Contact') }}</h1>
-                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    {{ __('Add a new customer or vendor') }}
-                </p>
-            </div>
+    <x-page-header
+        :title="__('Create Contact')"
+        :description="__('Add a new customer or vendor')"
+        :back-href="route('contacts.index')"
+        :back-label="__('Back to Contacts')"
+    >
+        <x-slot:action>
             <flux:button href="{{ route('contacts.index') }}" variant="ghost" wire:navigate>
                 {{ __('Cancel') }}
             </flux:button>
-        </div>
-    </div>
+        </x-slot:action>
+    </x-page-header>
 
     <form wire:submit="save">
         <x-contacts.form-fields :submitText="__('Create Contact')" />

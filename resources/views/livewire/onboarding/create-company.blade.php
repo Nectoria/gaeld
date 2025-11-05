@@ -236,14 +236,9 @@ new class extends Component {
                 </div>
 
                 <!-- Info Box -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                    <h3 class="text-sm font-medium text-blue-900 dark:text-blue-300 mb-2">
-                        {{ __("Don't worry!") }}
-                    </h3>
-                    <p class="text-sm text-blue-800 dark:text-blue-400">
-                        {{ __("You can update all of this information later in Company Settings. Let's just get you started with the basics.") }}
-                    </p>
-                </div>
+                <x-alert type="info" :title="__('Don\'t worry!')">
+                    {{ __("You can update all of this information later in Company Settings. Let's just get you started with the basics.") }}
+                </x-alert>
 
                 <!-- Actions -->
                 <div class="flex items-center justify-end gap-3 pt-4">
