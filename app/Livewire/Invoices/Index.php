@@ -63,6 +63,7 @@ class Index extends Component
         $this->resetPage();
     }
 
+    #[Computed]
     public function hasActiveFilters(): bool
     {
         return ! empty($this->search)

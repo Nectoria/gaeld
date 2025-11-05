@@ -127,17 +127,26 @@ test('pagination resets when search changes', function () {
     // Create more than 15 contacts to trigger pagination
     Contact::factory()->count(20)->create([
         'company_id' => $this->company->id,
+        'name' => 'Contact',
     ]);
 
-    $component = Livewire::test(Index::class);
+    // Create one specific contact for search
+    Contact::factory()->create([
+        'company_id' => $this->company->id,
+        'name' => 'Searchable Contact',
+    ]);
 
-    // Go to page 2
-    $component->set('page', 2);
+    $component = Livewire::test(Index::class)
+        ->call('gotoPage', 2)
+        ->assertSet('search', '');
 
-    // Change search - should reset to page 1
-    $component->set('search', 'test');
+    // Change search - should reset pagination and show only matching contact
+    $component->set('search', 'Searchable')
+        ->assertSee('Searchable Contact');
 
-    expect($component->get('page'))->toBe(1);
+    // Get the contacts and verify we're showing the first page of results
+    $contacts = $component->get('contacts');
+    expect($contacts->currentPage())->toBe(1);
 });
 
 test('can clear all filters', function () {
