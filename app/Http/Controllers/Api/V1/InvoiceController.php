@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\StoreInvoiceRequest;
+use App\Http\Requests\Api\V1\UpdateInvoiceRequest;
 use App\Http\Resources\Api\V1\InvoiceResource;
 use App\Http\Traits\ApiQueryFilter;
 use App\Models\Company;
@@ -46,33 +48,12 @@ class InvoiceController extends Controller
     /**
      * Create a new invoice
      */
-    public function store(Request $request, Company $company)
+    public function store(StoreInvoiceRequest $request, Company $company)
     {
-        $validated = $request->validate([
-            'contact_id' => 'required|exists:contacts,id',
-            'status' => 'sometimes|in:draft,sent,viewed,partial,paid,overdue,cancelled',
-            'invoice_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:invoice_date',
-            'tax_rate' => 'required|numeric|min:0|max:100',
-            'tax_inclusive' => 'sometimes|boolean',
-            'currency' => 'sometimes|string|max:3',
-            'notes' => 'nullable|string',
-            'terms' => 'nullable|string',
-            'footer' => 'nullable|string',
-            'items' => 'required|array|min:1',
-            'items.*.name' => 'required|string|max:255',
-            'items.*.description' => 'nullable|string',
-            'items.*.quantity' => 'required|numeric|min:0',
-            'items.*.unit' => 'nullable|string|max:50',
-            'items.*.unit_price' => 'required|integer|min:0',
-            'items.*.tax_rate' => 'required|numeric|min:0|max:100',
-            'items.*.discount_percent' => 'nullable|numeric|min:0|max:100',
-        ]);
-
         $invoice = $this->invoiceService->createInvoice(
             $company,
             $request->user()->id,
-            $validated
+            $request->validated()
         );
 
         return new InvoiceResource($invoice->load(['contact', 'items']));
@@ -89,28 +70,9 @@ class InvoiceController extends Controller
     /**
      * Update an invoice
      */
-    public function update(Request $request, Company $company, Invoice $invoice)
+    public function update(UpdateInvoiceRequest $request, Company $company, Invoice $invoice)
     {
-        // Cannot update paid or cancelled invoices
-        if (in_array($invoice->status, ['paid', 'cancelled'])) {
-            return response()->json([
-                'error' => [
-                    'message' => 'Cannot update invoices with status: '.$invoice->status,
-                    'code' => 'INVOICE_LOCKED',
-                    'status' => 422,
-                ],
-            ], 422);
-        }
-
-        $validated = $request->validate([
-            'contact_id' => 'sometimes|exists:contacts,id',
-            'invoice_date' => 'sometimes|date',
-            'due_date' => 'sometimes|date',
-            'notes' => 'nullable|string',
-            'items' => 'sometimes|array|min:1',
-        ]);
-
-        $invoice = $this->invoiceService->updateInvoice($invoice, $validated);
+        $invoice = $this->invoiceService->updateInvoice($invoice, $request->validated());
 
         return new InvoiceResource($invoice->load(['contact', 'items']));
     }

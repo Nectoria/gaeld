@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\StoreContactRequest;
+use App\Http\Requests\Api\V1\UpdateContactRequest;
 use App\Http\Resources\Api\V1\ContactResource;
 use App\Http\Traits\ApiQueryFilter;
 use App\Models\Company;
@@ -48,31 +50,9 @@ class ContactController extends Controller
     /**
      * Create a new contact
      */
-    public function store(Request $request, Company $company)
+    public function store(StoreContactRequest $request, Company $company)
     {
-        $validated = $request->validate([
-            'type' => 'required|in:customer,vendor,both',
-            'status' => 'sometimes|in:active,inactive',
-            'company_name' => 'required|string|max:255',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'website' => 'nullable|url|max:255',
-            'address_line_1' => 'nullable|string|max:255',
-            'address_line_2' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string|max:100',
-            'postal_code' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:2',
-            'vat_number' => 'nullable|string|max:50',
-            'iban' => 'nullable|string|max:34',
-            'payment_terms_days' => 'nullable|integer|min:0',
-            'currency' => 'nullable|string|max:3',
-            'notes' => 'nullable|string',
-        ]);
-
-        $contact = $this->contactService->createContact($company, $validated);
+        $contact = $this->contactService->createContact($company, $request->validated());
 
         return new ContactResource($contact);
     }
@@ -88,22 +68,9 @@ class ContactController extends Controller
     /**
      * Update a contact
      */
-    public function update(Request $request, Company $company, Contact $contact)
+    public function update(UpdateContactRequest $request, Company $company, Contact $contact)
     {
-        $validated = $request->validate([
-            'type' => 'sometimes|in:customer,vendor,both',
-            'status' => 'sometimes|in:active,inactive',
-            'company_name' => 'sometimes|string|max:255',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'website' => 'nullable|url|max:255',
-            'payment_terms_days' => 'nullable|integer|min:0',
-            'notes' => 'nullable|string',
-        ]);
-
-        $contact = $this->contactService->updateContact($contact, $validated);
+        $contact = $this->contactService->updateContact($contact, $request->validated());
 
         return new ContactResource($contact);
     }
