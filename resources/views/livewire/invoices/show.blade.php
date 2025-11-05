@@ -80,68 +80,60 @@ new class extends Component {
     }
 }; ?>
 
-<div>
-    <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <a href="{{ route('invoices.index') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 mb-2 inline-flex items-center" wire:navigate>
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        {{ __('Back to Invoices') }}
-                    </a>
-                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">
-                        {{ $invoice->invoice_number }}
-                    </h1>
-                    <div class="flex items-center gap-3 mt-2">
-                        <flux:badge :color="$this->getStatusColor($invoice->status)" size="lg">
-                            {{ ucfirst($invoice->status) }}
-                        </flux:badge>
-                        @if($invoice->isOverdue())
-                            <span class="text-sm text-red-600 dark:text-red-400 font-medium">
-                                {{ __('Overdue by :time', ['time' => $invoice->due_date->diffForHumans(now(), true)]) }}
-                            </span>
-                        @endif
-                    </div>
-                </div>
+<x-page-layout max-width="5xl">
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <x-back-link :href="route('invoices.index')" :label="__('Back to Invoices')" />
 
-                <!-- Actions -->
-                <div class="flex items-center gap-2">
-                    @can('update', $invoice)
-                        @if($invoice->status === 'draft')
-                            <flux:button href="{{ route('invoices.edit', $invoice) }}" icon="pencil" wire:navigate>
-                                {{ __('Edit') }}
-                            </flux:button>
-                        @endif
-                    @endcan
-
-                    @can('send', $invoice)
-                        @if($invoice->status === 'draft')
-                            <flux:button wire:click="sendInvoice" variant="primary">
-                                {{ __('Send Invoice') }}
-                            </flux:button>
-                        @endif
-                    @endcan
-
-                    @can('markAsPaid', $invoice)
-                        @if(!$invoice->isPaid())
-                            <flux:button wire:click="markAsPaid" variant="filled">
-                                {{ __('Mark as Paid') }}
-                            </flux:button>
-                        @endif
-                    @endcan
-
-                    <!-- Download PDF -->
-                    @can('generateQr', $invoice)
-                        <flux:button wire:click="downloadPdf" variant="ghost" icon="arrow-down-tray">
-                            {{ __('Download PDF') }}
-                        </flux:button>
-                    @endcan
+                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white mt-2">
+                    {{ $invoice->invoice_number }}
+                </h1>
+                <div class="flex items-center gap-3 mt-2">
+                    <flux:badge :color="$this->getStatusColor($invoice->status)" size="lg">
+                        {{ ucfirst($invoice->status) }}
+                    </flux:badge>
+                    @if($invoice->isOverdue())
+                        <span class="text-sm text-red-600 dark:text-red-400 font-medium">
+                            {{ __('Overdue by :time', ['time' => $invoice->due_date->diffForHumans(now(), true)]) }}
+                        </span>
+                    @endif
                 </div>
             </div>
+
+            <div class="flex items-center gap-2">
+                @can('update', $invoice)
+                    @if($invoice->status === 'draft')
+                        <flux:button href="{{ route('invoices.edit', $invoice) }}" icon="pencil" wire:navigate>
+                            {{ __('Edit') }}
+                        </flux:button>
+                    @endif
+                @endcan
+
+                @can('send', $invoice)
+                    @if($invoice->status === 'draft')
+                        <flux:button wire:click="sendInvoice" variant="primary">
+                            {{ __('Send Invoice') }}
+                        </flux:button>
+                    @endif
+                @endcan
+
+                @can('markAsPaid', $invoice)
+                    @if(!$invoice->isPaid())
+                        <flux:button wire:click="markAsPaid" variant="filled">
+                            {{ __('Mark as Paid') }}
+                        </flux:button>
+                    @endif
+                @endcan
+
+                @can('generateQr', $invoice)
+                    <flux:button wire:click="downloadPdf" variant="ghost" icon="arrow-down-tray">
+                        {{ __('Download PDF') }}
+                    </flux:button>
+                @endcan
+            </div>
         </div>
+    </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
@@ -336,5 +328,4 @@ new class extends Component {
                 @endif
             </div>
         </div>
-    </div>
-</div>
+</x-page-layout>

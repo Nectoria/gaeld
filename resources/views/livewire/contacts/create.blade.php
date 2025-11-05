@@ -78,7 +78,7 @@ new class extends Component {
     }
 }; ?>
 
-<div>
+<x-page-layout>
     <x-page-header
         :title="__('Create Contact')"
         :description="__('Add a new customer or vendor')"
@@ -95,4 +95,4 @@ new class extends Component {
     <form wire:submit="save">
         <x-contacts.form-fields :submitText="__('Create Contact')" />
     </form>
-</div>
+</x-page-layout>

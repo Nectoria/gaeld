@@ -1,20 +1,19 @@
-<div>
-        <!-- Header -->
-        <div class="mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ __('Invoices') }}</h1>
-                    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        {{ __('Manage your invoices and generate Swiss QR bills') }}
-                    </p>
-                </div>
-                @can('create', App\Models\Invoice::class)
-                    <flux:button href="{{ route('invoices.create') }}" icon="plus">
-                        {{ __('New Invoice') }}
-                    </flux:button>
-                @endcan
+<x-page-layout>
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ __('Invoices') }}</h1>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                    {{ __('Manage your invoices and generate Swiss QR bills') }}
+                </p>
             </div>
+            @can('create', App\Models\Invoice::class)
+                <flux:button href="{{ route('invoices.create') }}" icon="plus">
+                    {{ __('New Invoice') }}
+                </flux:button>
+            @endcan
         </div>
+    </div>
 
         <!-- Filters -->
         <x-data-table.filters :show-clear="$this->hasActiveFilters()">
@@ -99,4 +98,4 @@
                 </x-data-table.empty>
             @endif
         </x-data-table.wrapper>
-</div>
+</x-page-layout>

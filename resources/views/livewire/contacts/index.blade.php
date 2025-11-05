@@ -1,20 +1,19 @@
-<div>
-        <!-- Header -->
-        <div class="mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ __('Contacts') }}</h1>
-                    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        {{ __('Manage your customers and vendors') }}
-                    </p>
-                </div>
-                @can('create', App\Models\Contact::class)
-                    <flux:button href="{{ route('contacts.create') }}" icon="plus">
-                        {{ __('New Contact') }}
-                    </flux:button>
-                @endcan
+<x-page-layout>
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">{{ __('Contacts') }}</h1>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                    {{ __('Manage your customers and vendors') }}
+                </p>
             </div>
+            @can('create', App\Models\Contact::class)
+                <flux:button href="{{ route('contacts.create') }}" icon="plus">
+                    {{ __('New Contact') }}
+                </flux:button>
+            @endcan
         </div>
+    </div>
 
         <!-- Filters -->
         <x-data-table.filters :show-clear="$search || $type">
@@ -76,4 +75,4 @@
                 </x-data-table.empty>
             @endif
         </x-data-table.wrapper>
-</div>
+</x-page-layout>

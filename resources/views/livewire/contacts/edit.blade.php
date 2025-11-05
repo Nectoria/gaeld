@@ -109,7 +109,7 @@ new class extends Component {
     }
 }; ?>
 
-<div>
+<x-page-layout>
     <x-page-header
         :title="__('Edit Contact')"
         :description="$contact->name"
@@ -126,4 +126,4 @@ new class extends Component {
     <form wire:submit="update">
         <x-contacts.form-fields :submitText="__('Update Contact')" />
     </form>
-</div>
+</x-page-layout>
